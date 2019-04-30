@@ -27,8 +27,23 @@ function LocationObject(search_query, formatted_query, lat, lng) {
 app.get('/location', (request, response) => {
 
   const locationData = require('./data/geo.json');
+  let searchQuery = request.query.data;
+  let locationIndex;
 
-  let locationResponse = new LocationObject(request.query.data, locationData.results[0].formatted_address, locationData.results[0].geometry.location.lat, locationData.results[0].geometry.location.lng);
+  for (let i = 0 ; i < locationData ; i++) {
+    if (searchQuery.toLowerCase() === locationData.results[i].address_components[0].long_name.toLowerCase()) {
+      locationIndex = i;
+      console.log(locationIndex);
+      break;
+    }
+    if (i === locationData.results.length - 1) {
+      response.status(500).send(`Sorry, we could not find information about ${searchQuery}`);
+    }
+  }
+
+
+
+  let locationResponse = new LocationObject(searchQuery, locationData.results[locationIndex].formatted_address, locationData.results[locationIndex].geometry.location.lat, locationData.results[locationIndex].geometry.location.lng);
 
   console.log(locationResponse);
 
