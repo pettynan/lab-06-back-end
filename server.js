@@ -3,7 +3,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -17,9 +16,10 @@ function LocationObject(search_query, formatted_query, lat, lng) {
   this.longitude = lng.toString();
 }
 
-var WeatherForecast = function(forecast, time) {
+var WeatherForecast = function(forecast, timestamp) {
+  this.timestamp = timestamp;
   this.forecast = forecast;
-  this.time = time;
+  this.time = new Date(this.timestamp * 1000).toDateString();
   weatherForecast.push(this);
 };
 
@@ -30,14 +30,9 @@ const locationData = require('./data/geo.json');
 // express middleware
 app.use(cors());
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
 app.get('/location', (request, response) => {
 
   let locationResponse = new LocationObject(request.query.data, locationData.results[0].formatted_address, locationData.results[0].geometry.location.lat, locationData.results[0].geometry.location.lng);
-
-  console.log(locationResponse);
 
   response.status(200).send(locationResponse);
 });
