@@ -27,12 +27,32 @@ const weatherForecast = [];
 
 const locationData = require('./data/geo.json');
 
+
+function checkLocationMatch(searchQuery, response) {
+  // let locationValid = false;
+
+  for (let i = 0 ; i < locationData.results.length; i++) {
+    if (searchQuery.toLowerCase() === locationData.results[i].address_components[0].long_name.toLowerCase()) {
+      // locationValid = true;
+      return i;
+    }
+  }
+  response.status(500).send(`Sorry, we could not find information about ${searchQuery}`);
+}
+
+
 // express middleware
 app.use(cors());
 
-app.get('/location', (request, response) => {
 
-  let locationResponse = new LocationObject(request.query.data, locationData.results[0].formatted_address, locationData.results[0].geometry.location.lat, locationData.results[0].geometry.location.lng);
+
+app.get('/location', (request, response) => {
+  let locations = locationData.results;
+
+  // validate input
+  let locationIndex = checkLocationMatch(request.query.data, response);
+
+  let locationResponse = new LocationObject(request.query.data, locations[locationIndex].formatted_address, locations[locationIndex].geometry.location.lat, locations[locationIndex].geometry.location.lng);
 
   response.status(200).send(locationResponse);
 });
