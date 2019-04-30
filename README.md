@@ -15,8 +15,39 @@
 ## Change Log
 <!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples:
 
-01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource.
+01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource.-->
 
 ## Credits and Collaborations
-<!-- Give credit (and a link) to other people or resources that helped you build this application. -->
--->
+City Explorer Front-end Team
+
+## Feature Deployment Schedule
+
+Number and name of feature: Location
+
+  Estimate of time needed to complete: 60 minutes
+
+  Start time: 0945
+
+  Finish time: 1100
+
+  Actual time needed to complete: 75 minutes
+
+Number and name of feature: Weather
+
+  Estimate of time needed to complete: 60 minutes
+
+  Start time: 1000
+
+  Finish time: 1100
+
+  Actual time needed to complete: 60 minutes
+
+Number and name of feature: Errors
+
+  Estimate of time needed to complete: 60 minutes
+
+  Start time: 1115
+
+  Finish time: 1200
+
+  Actual time needed to complete: 45 minutes
