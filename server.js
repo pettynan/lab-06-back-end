@@ -27,56 +27,48 @@ const weatherForecast = [];
 
 const locationData = require('./data/geo.json');
 
-
-function checkLocationMatch(searchQuery, response) {
-  // let locationValid = false;
-
-  for (let i = 0 ; i < locationData.results.length; i++) {
-    if (searchQuery.toLowerCase() === locationData.results[i].address_components[0].long_name.toLowerCase()) {
-      // locationValid = true;
-      return i;
-    }
-  }
-  response.status(500).send(`Sorry, we could not find information about ${searchQuery}`);
+function handleError(error, response) {
+  response.status(500).send(`Sorry, there was an error.`);
 }
-
 
 // express middleware
 app.use(cors());
 
-
-
 app.get('/location', (request, response) => {
-  let locations = locationData.results;
+  try {
+    let locations = locationData.results;
 
-  // validate input
-  let locationIndex = checkLocationMatch(request.query.data, response);
+    let locationResponse = new LocationObject(request.query.data, locations[0].formatted_address, locations[0].geometry.location.lat, locations[0].geometry.location.lng);
 
-  let locationResponse = new LocationObject(request.query.data, locations[locationIndex].formatted_address, locations[locationIndex].geometry.location.lat, locations[locationIndex].geometry.location.lng);
-
-  response.status(200).send(locationResponse);
+    response.status(200).send(locationResponse);
+  } catch (error) {
+    console.log('error', error);
+    handleError(error, response);
+  }
 });
 
-
+// smoke test endpoint
 app.get('/hello', (request, response) => {
   response.status(200).send('Hello');
 });
 
 // weather endpoint
 app.get('/weather', (request, response) => {
+  try {
+    // get lat long for matching (maybe?)
+    // let location = locationData.location;
 
-  // get lat long for matching (maybe?)
-  // let location = locationData.location;
+    // get weather data
+    const weatherData = require('./data/darksky.json');
+    weatherData.daily.data.forEach(el => {
+      new WeatherForecast(el.summary, el.time);
+    });
 
-  // get weather data
-  const weatherData = require('./data/darksky.json');
-  weatherData.daily.data.forEach(el => {
-    new WeatherForecast(el.summary, el.time);
-  });
-
-  response
-    .status(200)
-    .send(weatherForecast);
+    response.status(200).send(weatherForecast);
+  } catch (error) {
+    console.log('error', error);
+    handleError(error, response);
+  }
 });
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
